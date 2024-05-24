@@ -1,9 +1,13 @@
 use std::net::TcpStream;
 use std::io::{BufRead, BufReader, Write};
 use std::thread;
+use std::env;
 
 fn main() {
-	let mut stream = TcpStream::connect("127.0.0.1:5555").expect("Failed to bind to address");
+	let args: Vec<String> = env::args().collect();
+	let ip_address = &args[1];
+
+	let mut stream = TcpStream::connect(ip_address.to_owned() + ":5555").expect("Failed to bind to address");
 	let mut stream2 = stream.try_clone().expect("Failed to clone stream.");
 	let handle1 = thread::spawn(move || {
 		loop {
