@@ -2,7 +2,7 @@
 
 ## Roadmap
 - [x] Implement local network messaging using sockets and threads
-- [ ] Add server ip address as a parameter
+- [x] Add server ip address as a parameter
 - [ ] Improve the terminal interface
 - [ ] Add RSA encryption for the messages
 
