@@ -1,10 +1,19 @@
 # rust-msg-encryption
+This is a project made in Rust to try and understand the basics of asymmetric encryption, practice Rust and use sockets.
 
 ## Roadmap
 - [x] Implement local network messaging using sockets and threads
 - [x] Add server ip address as a parameter
 - [ ] Improve the terminal interface
 - [ ] Add RSA encryption for the messages
+
+## Principle
+For each user, a **private** and a **public** key are generated using the RSA principle.
+- The public key is shared with the other user, and will use it to encrypt every message sent.
+- The other user will be able to decrypt the message encrypted with its public key using the associated private key.
+
+## Disclaimer
+This code should not be used for **security purposes** and is only made to demonstrate how asymmetric encryption works.
 
 ## Requirements
 - Cargo
@@ -27,3 +36,6 @@ cargo run --bin server 172.0.0.1
 ```bash
 cargo run --bin client IP_ADDRESS_SERVER
 ```
+
+## Credits
+The mathematic implementation of the RSA algorithm was highly inspired from [This repository](https://github.com/andrewkiluk/RSA-Library).
