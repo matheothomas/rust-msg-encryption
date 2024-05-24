@@ -1,9 +1,21 @@
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener, TcpStream};
 use std::io::{BufRead, BufReader, Write};
 use std::thread;
+use std::env;
 
 fn main() {
-    let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 5555);
+	let args: Vec<String> = env::args().collect();
+	let ip_address = &args[1];
+	
+	let parts = ip_address.split(".");
+	let collection: Vec<&str> = parts.collect();
+	let mut values: Vec<u8> = Vec::new();
+	for coll in collection {
+		values.push(coll.parse::<u8>().unwrap());
+	}
+	// dbg!(values);
+
+    let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(values[0], values[1], values[2], values[3])), 5555);
     let listener = TcpListener::bind(socket).expect("Failed to bind to address");
     println!("Server listening on {}:{}", socket.ip(), socket.port());
 
@@ -19,7 +31,6 @@ fn main() {
 			chat_loop_read(&mut stream2);
 		}
 	});
-	println!("test");
 	handle1.join().unwrap();
 	handle2.join().unwrap();
 }
