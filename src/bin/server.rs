@@ -5,15 +5,12 @@ use std::env;
 
 fn main() {
 	let args: Vec<String> = env::args().collect();
-	let ip_address = &args[1];
 	
-	let parts = ip_address.split(".");
-	let collection: Vec<&str> = parts.collect();
+	let ip_addr_collection: Vec<&str> = (&args[1]).split(".").collect();
 	let mut values: Vec<u8> = Vec::new();
-	for coll in collection {
-		values.push(coll.parse::<u8>().unwrap());
+	for val in ip_addr_collection {
+		values.push(val.parse::<u8>().unwrap());
 	}
-	// dbg!(values);
 
     let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(values[0], values[1], values[2], values[3])), 5555);
     let listener = TcpListener::bind(socket).expect("Failed to bind to address");
@@ -38,7 +35,7 @@ fn main() {
 fn chat_loop_write(mut stream: &TcpStream) {
 	let mut msg: String = String::new();
 
-	println!("You : ");
+	// println!("You : ");
 	std::io::stdin().read_line(&mut msg).expect("Unable to read input");
 	stream.write(msg.as_bytes()).expect("Couldn't write to server");
 }
@@ -48,7 +45,7 @@ fn chat_loop_read(mut stream: &TcpStream) {
 	let mut reader = BufReader::new(&mut stream);
 	reader.read_until(b'\n', &mut server_buffer).expect("Couldn't read from server");
 
-	print!("Other : {}", std::str::from_utf8(&server_buffer).expect("Could not write buffer as string"));
+	println!("\x1b[92m{}\x1b[0m", std::str::from_utf8(&server_buffer).expect("Could not write buffer as string"));
 }
 
 /*
