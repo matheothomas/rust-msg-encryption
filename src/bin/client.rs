@@ -19,7 +19,6 @@ fn main() {
 			chat_loop_read(&mut stream2);
 		}
 	});
-	println!("test");
 	handle1.join().unwrap();
 	handle2.join().unwrap();
 }
@@ -27,7 +26,7 @@ fn main() {
 fn chat_loop_write(mut stream: &TcpStream) {
 	let mut msg: String = String::new();
 
-	println!("You : ");
+	// println!("You : ");
 	std::io::stdin().read_line(&mut msg).expect("Unable to read input");
 	stream.write(msg.as_bytes()).expect("Couldn't write to server");
 }
@@ -37,6 +36,6 @@ fn chat_loop_read(mut stream: &TcpStream) {
 	let mut reader = BufReader::new(&mut stream);
 	reader.read_until(b'\n', &mut server_buffer).expect("Couldn't read from server");
 
-	print!("Other : {}", std::str::from_utf8(&server_buffer).expect("Could not write buffer as string"));
+	println!("\x1b[92m{}\x1b[0m", std::str::from_utf8(&server_buffer).expect("Could not write buffer as string"));
 }
 
