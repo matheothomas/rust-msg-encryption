@@ -28,12 +28,12 @@ fn main() {
 	let mut stream2 = stream.try_clone().expect("Failed to clone stream.");
 	let handle1 = thread::spawn(move || {
 		loop {
-			chat_loop_write(&mut stream);
+			chat_loop_write(&mut stream, &client_pub_key);
 		}
 	});
 	let handle2 = thread::spawn(move || {
 		loop {
-			chat_loop_read(&mut stream2);
+			chat_loop_read(&mut stream2, &pri_key);
 		}
 	});
 	handle1.join().unwrap();
@@ -66,43 +66,27 @@ fn send_public_key(mut stream: &TcpStream, pub_key: &rsa::PubKey) {
     stream.write(public_key_data.as_bytes()).expect("Failed to send public key to server");
 }
 
-fn chat_loop_write(mut stream: &TcpStream) {
+fn chat_loop_write(mut stream: &TcpStream, client_pub_key: &rsa::PubKey) {
 	let mut msg: String = String::new();
 
-	// println!("You : ");
 	std::io::stdin().read_line(&mut msg).expect("Unable to read input");
-	stream.write(msg.as_bytes()).expect("Couldn't write to server");
+    //println!("msg : {}", msg);
+    let encrypted = rsa::rsa_encrypt(&msg, &client_pub_key);
+    let encrypted_str = encrypted.iter().map(|&x| x.to_string()).collect::<Vec<String>>().join(",");
+    let msg_encrypted_str = format!("{}\n", encrypted_str);
+    println!("msg : {:?}", msg_encrypted_str);
+	stream.write(msg_encrypted_str.as_bytes()).expect("Couldn't write to server");
 }
 
-fn chat_loop_read(mut stream: &TcpStream) {
+fn chat_loop_read(mut stream: &TcpStream, server_pri_key: &rsa::PriKey) {
 	let mut server_buffer: Vec<u8> = Vec::new();
 	let mut reader = BufReader::new(&mut stream);
 	reader.read_until(b'\n', &mut server_buffer).expect("Couldn't read from server");
 
 	println!("\x1b[92m{}\x1b[0m", std::str::from_utf8(&server_buffer).expect("Could not write buffer as string"));
+    let mut encrypted_msg: &str = std::str::from_utf8(&server_buffer).expect("");
+    let mut msg: Vec<i64> = encrypted_msg.trim().split(',').map(|s| s.parse::<i64>().expect("Invalid number")).collect();
+    println!("{:?}", msg);
+    println!("{}", rsa::rsa_decrypt(&msg, server_pri_key));
 }
 
-/*
-   fn handle_client_connection(mut stream: TcpStream) -> std::io::Result<()> {
-   println!("Incoming connection from client {}", stream.peer_addr()?);
-   let mut buffer: [u8; 1024] = [0; 1024];
-   loop {
-   let bytes_read: usize = stream.read(&mut buffer)?;
-   if bytes_read == 0 {
-   return Ok(());
-   }
-   let msg = match std::str::from_utf8(&buffer[..bytes_read]) {
-   Ok(s) => s,
-   Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
-   };
-
-   println!("Other : {}", msg);
-   let mut msg: String = String::new();
-   println!("You : ");
-   std::io::stdin().read_line(&mut msg).expect("Unable to read input");
-
-   stream.write(msg.as_bytes()).expect("Couldn't write to client");
-
-   }
-   }
-   */
