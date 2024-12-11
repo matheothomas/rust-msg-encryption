@@ -3,13 +3,13 @@
 use rand::Rng;
 
 pub struct PubKey {
-    modulus: i64,
-    exponent: i64,
+    pub modulus: i64,
+    pub exponent: i64,
 }
 
 pub struct PriKey {
-    modulus: i64,
-    exponent: i64,
+    pub modulus: i64,
+    pub exponent: i64,
 }
 
 
@@ -155,19 +155,4 @@ pub fn rsa_decrypt(msg: &[i64], prive: &PriKey) -> String {
         decrypted.push(decrypted_char as u8 as char);
     }
     decrypted
-}
-
-
-fn main() {
-    println!("random prime : {}", gen_prime());
-    println!("gcd : {}", gcd(56, 98));
-
-    let (pub_key, pri_key) = gen_keys();
-    let msg = "Test !";
-
-    let encrypted = rsa_encrypt(msg, &pub_key);
-    println!("Encrypted : {:?}", encrypted);
-
-    let decrypted = rsa_decrypt(&encrypted, &pri_key);
-    println!("Decrypted : {}", decrypted);
 }
