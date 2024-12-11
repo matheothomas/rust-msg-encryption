@@ -1,3 +1,5 @@
+mod rsa;
+
 use std::net::TcpStream;
 use std::io::{BufRead, BufReader, Write};
 use std::thread;
