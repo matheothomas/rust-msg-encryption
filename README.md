@@ -4,8 +4,8 @@ This is a project made in Rust to try and understand the basics of asymmetric en
 ## Roadmap
 - [x] Implement local network messaging using sockets and threads
 - [x] Add server ip address as a parameter
+- [x] Add RSA encryption for the messages
 - [ ] Improve the terminal interface
-- [ ] Add RSA encryption for the messages
 
 ## Principle
 For each user, a **private** and a **public** key are generated using the RSA principle.
