@@ -40,14 +40,14 @@ pub fn gcd(a: i64, b: i64) -> i64 {
     }
 }
 
-pub fn ext_euclid(mut a: i64, mut b: i64) -> i64 {
-    //let mut x = 0, y = 1, u = 1, v = 0, gcd = b, m, n, q, r;
-    let (mut x, mut y, mut u, mut v, mut gcd, mut m, mut n, mut q, mut r) = (0, 1, 1, 0, b, 0, 0, 0, 0);
+pub fn ext_euclid(mut a: i64, b: i64) -> i64 {
+    //let (mut x, mut y, mut u, mut v, mut gcd, mut m, mut n, mut q, mut r) = (0, 1, 1, 0, b, 0, 0, 0, 0);
+    let (mut x, mut y, mut u, mut v, mut gcd) = (0, 1, 1, 0, b);
     while a != 0 {
-        q = gcd / a;
-        r = gcd % a;
-        m = x - u * q;
-        n = y - v * q;
+        let q = gcd / a;
+        let r = gcd % a;
+        let m = x - u * q;
+        let n = y - v * q;
         gcd = a;
         a = r;
         x = u;
@@ -65,7 +65,7 @@ pub fn gen_keys () -> (PubKey, PriKey) {
     let mut max = p * q;
     let mut phi_max = (p - 1) * (q - 1);
 
-    while ((p == q) || (gcd(phi_max, e as i64) != 1)) {
+    while (p == q) || (gcd(phi_max, e as i64) != 1) {
         p = gen_prime();
         q = gen_prime();
         max = p * q;
@@ -92,13 +92,13 @@ pub fn mod_mult(a: i64, b: i64, modulus: i64) -> i64 {
         return product % modulus;
     }
     if a & 1 != 0 {
-        product = mod_mult((a >> 1), b, modulus);
+        product = mod_mult(a >> 1, b, modulus);
         if(product << 1) > product {
             return ((product << 1) % modulus + b) % modulus;
         }
     }
 
-    product = mod_mult((a >> 1), b, modulus);
+    product = mod_mult(a >> 1, b, modulus);
     if(product << 1) > product {
         return (product << 1) % modulus;
     }
