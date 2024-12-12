@@ -31,7 +31,7 @@ fn main() {
 	handle2.join().unwrap();
 }
 
-fn receive_public_key(mut stream: &TcpStream) -> rsa::PubKey {
+fn receive_public_key(stream: &TcpStream) -> rsa::PubKey {
     let mut server_buffer: Vec<u8> = Vec::new();
     let mut reader = BufReader::new(stream);
 
@@ -64,7 +64,7 @@ fn chat_loop_write(mut stream: &TcpStream, server_pub_key: &rsa::PubKey) {
     let encrypted = rsa::rsa_encrypt(&msg, &server_pub_key);
     let encrypted_str = encrypted.iter().map(|&x| x.to_string()).collect::<Vec<String>>().join(",");
     let msg_encrypted_str = format!("{}\n", encrypted_str);
-    println!("msg : {:?}", msg_encrypted_str);
+    //println!("msg : {:?}", msg_encrypted_str);
 	stream.write(msg_encrypted_str.as_bytes()).expect("Couldn't write to server");
 }
 
@@ -74,10 +74,10 @@ fn chat_loop_read(mut stream: &TcpStream, client_pri_key: &rsa::PriKey) {
 	let mut reader = BufReader::new(&mut stream);
 	reader.read_until(b'\n', &mut server_buffer).expect("Couldn't read from server");
 
-	println!("\x1b[92m{}\x1b[0m", std::str::from_utf8(&server_buffer).expect("Could not write buffer as string"));
-    let mut encrypted_msg: &str = std::str::from_utf8(&server_buffer).expect("");
-    let mut msg: Vec<i64> = encrypted_msg.trim().split(',').map(|s| s.parse::<i64>().expect("Invalid number")).collect();
-    println!("{:?}", msg);
-    println!("{}", rsa::rsa_decrypt(&msg, client_pri_key));
+	//println!("\x1b[92m{}\x1b[0m", std::str::from_utf8(&server_buffer).expect("Could not write buffer as string"));
+    let encrypted_msg: &str = std::str::from_utf8(&server_buffer).expect("");
+    let msg: Vec<i64> = encrypted_msg.trim().split(',').map(|s| s.parse::<i64>().expect("Invalid number")).collect();
+    //println!("{:?}", msg);
+    println!("\x1b[92m{}\x1b[0m", rsa::rsa_decrypt(&msg, client_pri_key));
 }
 
