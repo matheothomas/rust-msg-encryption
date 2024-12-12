@@ -6,6 +6,7 @@ This is a project made in Rust to try and understand the basics of asymmetric en
 - [x] Add server ip address as a parameter
 - [x] Add RSA encryption for the messages
 - [ ] Improve the terminal interface
+- [ ] Remove disconnect crash
 
 ## Principle
 For each user, a **private** and a **public** key are generated using the RSA principle.
@@ -38,4 +39,4 @@ cargo run --bin client IP_ADDRESS_SERVER
 ```
 
 ## Credits
-The mathematic implementation of the RSA algorithm was highly inspired from [This repository](https://github.com/andrewkiluk/RSA-Library).
+The mathematic implementation of the RSA algorithm was highly inspired from [this repository](https://github.com/andrewkiluk/RSA-Library).
